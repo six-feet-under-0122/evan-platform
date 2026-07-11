@@ -18,7 +18,7 @@ class ErrorCode:
 
     # 会话相关 (3xxx)
     SESSION_NOT_FOUND = 'SESSION_NOT_FOUND'  # 会话不存在
-    SESSION_ACCESS_DENIED = 'SESSION_ACCESS_D'
+    SESSION_ACCESS_DENIED = 'SESSION_ACCESS_DENIED'
 
     # 消息相关 (4xxx)
     MESSAGE_NOT_FOUND = 'MESSAGE_NOT_FOUND'  # 消息不存在

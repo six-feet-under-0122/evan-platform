@@ -22,7 +22,7 @@ class User(db.Model):
     role = db.Column(db.String(20), nullable=False, default='user')
     # 是否激活
     is_active = db.Column(db.Boolean, nullable=False, default=True)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)#只要这个用户的任何其他数据被修改了，这里就必须自动把这个属性的值刷新成当前时间。
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
     last_login_at = db.Column(db.DateTime, nullable=True)
 

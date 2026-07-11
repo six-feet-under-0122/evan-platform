@@ -2,7 +2,7 @@ from flask import jsonify, g
 from typing import Any, Optional
 
 
-def ok(data: Any = None, message: str = 'Success') -> tuple:
+def ok(data: Any = None, message: str = 'Success', status: int = 200) -> tuple:
     """
     成功响应
 
@@ -19,7 +19,7 @@ def ok(data: Any = None, message: str = 'Success') -> tuple:
         'message': message,
         'trace_id': g.get('trace_id', '')
     }
-    return jsonify(response), 200
+    return jsonify(response), status
 
 
 def fail(code: str, message: str, status: int = 400, extra: Optional[dict] = None) -> tuple:
