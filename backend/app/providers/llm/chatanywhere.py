@@ -1,6 +1,8 @@
 import base64
+import json
 import os
 import requests
+from typing import Generator
 from flask import current_app
 from app.providers.llm.base import BaseLLMProvider
 from app.common.errors import AppError, ErrorCode
@@ -36,12 +38,56 @@ class ChatAnywhereProvider(BaseLLMProvider):
         except requests.RequestException as e:
             raise AppError(ErrorCode.LLM_REQUEST_FAILED, f'LLM request failed: {e}', 502)
 
+    def stream(self, messages: list, model: str, **kwargs) -> Generator[str, None, None]:
+        api_key = current_app.config['CHATANYWHERE_API_KEY']
+        api_url = current_app.config.get(
+            'CHATANYWHERE_API_URL',
+            'https://api.chatanywhere.tech/v1/chat/completions'
+        )
+
+        try:
+            resp = requests.post(
+                api_url,
+                headers={
+                    'Authorization': f'Bearer {api_key}',
+                    'Content-Type': 'application/json',
+                },
+                json={
+                    'model': model,
+                    'messages': messages,
+                    'stream': True,          # ← 告诉 API 返回流
+                },
+                stream=True,                 # ← 让 requests 不要一次性读完响应体
+                timeout=60,
+            )
+            resp.raise_for_status()# 检查网络请求
+
+            for line in resp.iter_lines():
+                if not line:
+                    continue
+                # OpenAI 流式格式每行都是 "data: {...}" 或 "data: [DONE]"
+                text = line.decode('utf-8')
+                if not text.startswith('data: '):
+                    continue
+                payload = text[6:]           # 去掉 "data: " 前缀 WOC...
+                if payload == '[DONE]':
+                    break
+                chunk = json.loads(payload)
+                delta = chunk['choices'][0]['delta'].get('content', '')
+                if delta:
+                    yield delta
+
+        except requests.Timeout:
+            raise AppError(ErrorCode.LLM_TIMEOUT, 'LLM request timed out', 504)
+        except requests.RequestException as e:
+            raise AppError(ErrorCode.LLM_REQUEST_FAILED, f'LLM request failed: {e}', 502)
+
 
 def blocks_to_openai_content(blocks: list, upload_folder: str) -> list:
     """
     把 message 的 blocks 结构转成 OpenAI 的 content 格式
 
-    blocks 格式（你自己的）：
+    blocks 格式：
         [
             {"type": "text", "text": "帮我看看这张图"},
             {"type": "image", "file_id": "abc123", "storage_path": "2026/07/10/abc.png"}

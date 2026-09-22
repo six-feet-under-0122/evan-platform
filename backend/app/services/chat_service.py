@@ -1,3 +1,4 @@
+from typing import Generator
 from flask import current_app
 from app.models.message import Message
 from app.models.file import File
@@ -63,7 +64,60 @@ class ChatService:
             model=model,
         )
 
-        return assistant_msg
+        return user_msg, assistant_msg
+
+    @staticmethod
+    def run_turn_stream(session_id: str, user_id: str,
+                        user_text: str, model: str,
+                        file_id: str = None) -> Generator[str, None, None]:
+
+        # 1. 验证 session 归属
+        session = SessionService.get_or_404(session_id, user_id)
+
+        # 2. 组装用户消息 blocks
+        blocks = [{'type': 'text', 'text': user_text}]
+
+        if file_id:
+            file = File.find_by_id(file_id)
+            if not file or file.user_id != user_id:
+                raise AppError(ErrorCode.NOT_FOUND, '文件不存在或无权访问', 404)
+            blocks.append({
+                'type': 'image',
+                'file_id': file.id,
+                'storage_path': file.storage_path,
+                'content_type': file.content_type,
+                'filename': file.filename,
+            })
+
+        # 3. 保存用户消息
+        MessageService.create(
+            session_id=session_id,
+            user_id=user_id,
+            role='user',
+            content_json={'blocks': blocks},
+            content_text=user_text,
+        )
+
+        # 4. 拉取历史，组装 LLM 格式
+        history = MessageService.list_by_session(session_id, limit=20)
+        messages = _build_messages(session, history, current_app.config['UPLOAD_FOLDER'])
+
+        # 5. 流式调用 LLM，边收边 yield，同时拼接完整回复
+        full_reply = []
+        for chunk in _provider.stream(messages, model):
+            full_reply.append(chunk)
+            yield chunk  # ← 实时吐给上层
+
+        # 6. 流结束后，把完整回复存库
+        reply_text = ''.join(full_reply)
+        MessageService.create(
+            session_id=session_id,
+            user_id=user_id,
+            role='assistant',
+            content_json={'blocks': [{'type': 'text', 'text': reply_text}]},
+            content_text=reply_text,
+            model=model,
+        )
 
 
 def _build_messages(session, history: list, upload_folder: str) -> list:
