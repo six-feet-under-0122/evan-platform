@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/* ===== 1. 全局 CSS 主题变量定义 ===== */
+:root,
+[data-theme="study-light"] {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F8F8;
+  --bg-tertiary: #dbdbdb;
+  --text-primary: #1A1A1A;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --accent: #6F5C42;
+  --accent-hover: #5A4A35;
+  --accent-light: #C4A584;
+  --border-color: #E5E5E5;
+  --divider: #F0F0F0;
+  --code-bg: #F5F5F5;
+  --color-success: #52C41A;
+  --color-warning: #FAAD14;
+  --color-error: #FF4D4F;
+}
+
+/* ===== 学习模式 - 黑暗 ===== */
+[data-theme="study-dark"] {
+  --bg-primary: #0F0F0F;
+  --bg-secondary: #1A1A1A;
+  --bg-tertiary: #242424;
+  --text-primary: #E8E8E8;
+  --text-secondary: #A8A8A8;
+  --text-tertiary: #666666;
+  --accent: #C4A574;
+  --accent-hover: #D4B584;
+  --accent-light: #8B7355;
+  --border-color: #2A2A2A;
+  --divider: #1F1F1F;
+  --code-bg: #1A1A1A;
+  --color-success: #73D13D;
+  --color-warning: #FFC53D;
+  --color-error: #FF7875;
+}
+
+/* ===== 温馨模式 - 白天 ===== */
+[data-theme="cozy-light"] {
+  --bg-primary: #FFF8F0;
+  --bg-secondary: #FFF0E0;
+  --bg-tertiary: #FFE8D0;
+  --text-primary: #2D2520;
+  --text-secondary: #5A4A42;
+  --text-tertiary: #8A7A72;
+  --accent: #8B6844;
+  --accent-hover: #6F5436;
+  --accent-light: #E8B889;
+  --border-color: #E8D0B8;
+  --divider: #F5E8D8;
+  --code-bg: #FFF0E0;
+  --color-success: #7CB342;
+  --color-warning: #FFA726;
+  --color-error: #E57373;
+}
+
+/* ===== 温馨模式 - 黑暗 ===== */
+[data-theme="cozy-dark"] {
+  --bg-primary: #1A1410;
+  --bg-secondary: #251F1A;
+  --bg-tertiary: #302A24;
+  --text-primary: #F5EDE0;
+  --text-secondary: #D0C4B4;
+  --text-tertiary: #A89888;
+  --accent: #C4A574;
+  --accent-hover: #D4B584;
+  --accent-light: #B8845A;
+  --border-color: #3A342E;
+  --divider: #2A241E;
+  --code-bg: #251F1A;
+  --color-success: #9CCC65;
+  --color-warning: #FFB74D;
+  --color-error: #EF5350;
+}
+
+/* ===== 2. Tailwind v4 主题映射绑定 ===== */
+/* 在 @theme 中将 CSS 变量绑定给 Tailwind，从而自动生成便捷工具类 */
+@theme {
+  --color-primary: var(--bg-primary);
+  --color-secondary: var(--bg-secondary);
+  --color-tertiary: var(--bg-tertiary);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-light: var(--accent-light);
+
+  --color-border: var(--border-color);
+  --color-divider: var(--divider);
+  --color-code: var(--code-bg);
+
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+
+  /* 圆角类生成: rounded-sm, rounded-md, rounded-lg */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+
+  /* 自定义间距类生成: p-custom-xs, m-custom-sm 等 */
+  --spacing-custom-xs: 0.5rem;
+  --spacing-custom-sm: 0.75rem;
+  --spacing-custom-md: 1rem;
+  --spacing-custom-lg: 1.5rem;
+  --spacing-custom-xl: 2rem;
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+  /* 过渡动画速度 */
+  --transition-duration-fast: 150ms;
+  --transition-duration-base: 200ms;
+  --transition-duration-slow: 300ms;
+}
+
+/* ===== 3. 全局基础样式 ===== */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color var(--transition-duration-base) ease, color var(--transition-duration-base) ease;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* 选中文本样式 */
+::selection {
+  background-color: var(--accent-light);
+  color: var(--bg-primary);
+}

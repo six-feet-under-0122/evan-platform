@@ -1,0 +1,147 @@
+/* ===== Element Plus 主题变量覆盖 ===== */
+/* 使用 CSS 变量覆盖 Element Plus 组件样式 */
+
+:root {
+  /* 覆盖 Element Plus 主色 */
+  --el-color-primary: var(--accent);
+  --el-color-primary-light-3: var(--accent-light);
+  --el-color-primary-light-5: var(--accent-light);
+  --el-color-primary-light-7: var(--accent-light);
+  --el-color-primary-light-8: var(--accent-light);
+  --el-color-primary-light-9: var(--bg-secondary);
+  --el-color-primary-dark-2: var(--accent-hover);
+
+  /* 背景色 */
+  --el-bg-color: var(--bg-primary);
+  --el-bg-color-page: var(--bg-primary);
+  --el-bg-color-overlay: var(--bg-secondary);
+
+  /* 文字颜色 */
+  --el-text-color-primary: var(--text-primary);
+  --el-text-color-regular: var(--text-secondary);
+  --el-text-color-secondary: var(--text-tertiary);
+  --el-text-color-placeholder: var(--text-tertiary);
+
+  /* 边框颜色 */
+  --el-border-color: var(--border-color);
+  --el-border-color-light: var(--border-color);
+  --el-border-color-lighter: var(--divider);
+  --el-border-color-extra-light: var(--divider);
+
+  /* 填充色 */
+  --el-fill-color: var(--bg-secondary);
+  --el-fill-color-light: var(--bg-tertiary);
+  --el-fill-color-lighter: var(--bg-tertiary);
+  --el-fill-color-extra-light: var(--bg-tertiary);
+  --el-fill-color-blank: var(--bg-primary);
+  --el-fill-color-dark: var(--bg-secondary);
+
+  /* 功能色 */
+  --el-color-success: var(--success);
+  --el-color-warning: var(--warning);
+  --el-color-danger: var(--error);
+  --el-color-error: var(--error);
+  --el-color-info: var(--text-secondary);
+
+  /* 遮罩 */
+  --el-overlay-color: rgba(0, 0, 0, 0.5);
+  --el-overlay-color-light: rgba(0, 0, 0, 0.3);
+  --el-overlay-color-lighter: rgba(0, 0, 0, 0.2);
+
+  /* 阴影 */
+  --el-box-shadow: var(--shadow-sm);
+  --el-box-shadow-light: var(--shadow-md);
+  --el-box-shadow-lighter: var(--shadow-lg);
+  --el-box-shadow-dark: var(--shadow-lg);
+
+  /* 圆角 */
+  --el-border-radius-base: var(--radius-md);
+  --el-border-radius-small: var(--radius-sm);
+  --el-border-radius-round: 9999px;
+  --el-border-radius-circle: 50%;
+}
+
+/* ===== 针对特定组件的深度样式覆盖 ===== */
+
+/* Input 输入框 */
+.el-input__wrapper {
+  background-color: var(--bg-secondary);
+  box-shadow: 0 0 0 1px var(--border-color) inset;
+  transition: all var(--transition-base);
+}
+
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px var(--accent-light) inset;
+}
+
+.el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
+
+/* Button 按钮 */
+.el-button--primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.el-button--primary:hover,
+.el-button--primary:focus {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/* Message 消息提示 */
+.el-message {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Dialog 对话框 */
+.el-dialog {
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.el-dialog__header {
+  border-bottom: 1px solid var(--divider);
+}
+
+.el-dialog__footer {
+  border-top: 1px solid var(--divider);
+}
+
+/* Dropdown 下拉菜单 */
+.el-dropdown-menu {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+.el-dropdown-menu__item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--accent);
+}
+
+/* Popover 弹出框 */
+.el-popover.el-popper {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+/* Tooltip 文字提示 */
+.el-tooltip__popper {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+/* Scrollbar 滚动条 */
+.el-scrollbar__thumb {
+  background-color: var(--border-color);
+}
+
+.el-scrollbar__thumb:hover {
+  background-color: var(--text-tertiary);
+}
