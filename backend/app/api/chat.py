@@ -66,11 +66,11 @@ def chat_stream():
                 model=model,
                 file_id=file_id,
             ):
-                yield f"data: {json.dumps({'chunk': chunk}, ensure_ascii=False)}\n\n"
+                yield f"data: {chunk}\n\n"
+            # ⭐ 改：循环结束后再发送 [DONE]
+            yield "data: [DONE]\n\n"
         except AppError as e:
             yield f"event: error\ndata: {json.dumps({'code': e.code, 'message': e.message})}\n\n"
-        finally:
-            yield "data: [DONE]\n\n"
 
     return Response(
         stream_with_context(generate()),

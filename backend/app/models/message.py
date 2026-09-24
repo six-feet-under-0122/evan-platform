@@ -31,7 +31,6 @@ class Message(db.Model):
     # 额，外键连接+relationship连接+backref双向+messages.session.name链式调用对面表的数据；
     # session = db.relationship('Session', backref='messages')
     # 这句话的意思就是在Massage里塞了session,在Session里塞了messages 然后非必要不连接省内存
-    session = db.relationship('Session', backref='messages')
 
     def to_dict(self) -> dict:
         return {

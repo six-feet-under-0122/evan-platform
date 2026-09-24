@@ -69,10 +69,13 @@ class ChatAnywhereProvider(BaseLLMProvider):
                 text = line.decode('utf-8')
                 if not text.startswith('data: '):
                     continue
-                payload = text[6:]           # 去掉 "data: " 前缀 WOC...
+                payload = text[6:]           # 去掉 "data: " 前缀
                 if payload == '[DONE]':
                     break
                 chunk = json.loads(payload)
+                # ⭐ 检查 choices 是否为空
+                if not chunk.get('choices'):
+                    continue
                 delta = chunk['choices'][0]['delta'].get('content', '')
                 if delta:
                     yield delta

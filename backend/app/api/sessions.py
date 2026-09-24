@@ -71,3 +71,37 @@ def list_messages(session_id):
 
     messages = MessageService.list_by_session(session_id, limit=limit, before_id=before_id)
     return ok([m.to_dict() for m in messages])
+
+
+@bp.get('/<session_id>/messages/search')
+@jwt_required()
+def search_messages(session_id):
+    """搜索会话中的消息"""
+    user_id = get_jwt_identity()
+    # 先验证这个 session 是不是你的
+    SessionService.get_or_404(session_id, user_id)
+
+    query = request.args.get('q', '').strip()
+    if not query:
+        return ok([])
+
+    limit = min(int(request.args.get('limit', 20)), 50)
+
+    messages = MessageService.search_in_session(session_id, query, limit=limit)
+    return ok([m.to_dict() for m in messages])
+
+
+@bp.get('/search')
+@jwt_required()
+def search_all_messages():
+    """搜索用户所有会话的消息"""
+    user_id = get_jwt_identity()
+
+    query = request.args.get('q', '').strip()
+    if not query:
+        return ok([])
+
+    limit = min(int(request.args.get('limit', 50)), 100)
+
+    messages = MessageService.search_by_user(user_id, query, limit=limit)
+    return ok([m.to_dict() for m in messages])

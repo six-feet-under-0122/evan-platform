@@ -51,7 +51,7 @@ class FileService:
         # 按日期分目录：uploads/2026/07/10/abc123.png
         from datetime import datetime
         date_path = datetime.utcnow().strftime('%Y/%m/%d')
-        storage_path = os.path.join(date_path, unique_filename)
+        storage_path = f"{date_path}/{unique_filename}"  # ⭐ 改：强制使用正斜杠
 
         # 保存文件到磁盘
         upload_dir = current_app.config['UPLOAD_FOLDER']  # 'uploads/'

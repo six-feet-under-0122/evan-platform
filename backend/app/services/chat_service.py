@@ -71,6 +71,8 @@ class ChatService:
                         user_text: str, model: str,
                         file_id: str = None) -> Generator[str, None, None]:
 
+        import json
+
         # 1. 验证 session 归属
         session = SessionService.get_or_404(session_id, user_id)
 
@@ -90,13 +92,14 @@ class ChatService:
             })
 
         # 3. 保存用户消息
-        MessageService.create(
+        user_msg = MessageService.create(
             session_id=session_id,
             user_id=user_id,
             role='user',
             content_json={'blocks': blocks},
             content_text=user_text,
         )
+        yield json.dumps({'user_message': user_msg.to_dict()}, ensure_ascii=False)
 
         # 4. 拉取历史，组装 LLM 格式
         history = MessageService.list_by_session(session_id, limit=20)
@@ -106,11 +109,11 @@ class ChatService:
         full_reply = []
         for chunk in _provider.stream(messages, model):
             full_reply.append(chunk)
-            yield chunk  # ← 实时吐给上层
+            yield json.dumps({'chunk': chunk}, ensure_ascii=False)
 
         # 6. 流结束后，把完整回复存库
         reply_text = ''.join(full_reply)
-        MessageService.create(
+        assistant_msg = MessageService.create(
             session_id=session_id,
             user_id=user_id,
             role='assistant',
@@ -118,6 +121,7 @@ class ChatService:
             content_text=reply_text,
             model=model,
         )
+        yield json.dumps({'assistant_message': assistant_msg.to_dict()}, ensure_ascii=False)
 
 
 def _build_messages(session, history: list, upload_folder: str) -> list:
