@@ -31,3 +31,17 @@ export function getSessionMessages(id, limit = 50, before_id = null) {
   if (before_id) params.before_id = before_id
   return request.get(`/sessions/${id}/messages`, { params })
 }
+
+// 全局搜索所有会话的消息
+export function searchAllMessages(query, limit = 50) {
+  return request.get('/sessions/search', {
+    params: { q: query, limit }
+  })
+}
+
+// 搜索指定会话内的消息
+export function searchSessionMessages(sessionId, query, limit = 20) {
+  return request.get(`/sessions/${sessionId}/messages/search`, {
+    params: { q: query, limit }
+  })
+}

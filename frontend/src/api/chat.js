@@ -10,8 +10,9 @@ export async function sendMessageStream(
   message,
   model = 'gpt-4o-mini',
   file_id = null,
-  onChunk,
-  onDone,
+  onUserMessage,      // 接收用户消息
+  onChunk,            // 接收 AI 文本片段
+  onAssistantMessage, // 接收完整的 assistant 消息
   onError
 ) {
   const token = localStorage.getItem('access_token')
@@ -35,7 +36,6 @@ export async function sendMessageStream(
 
       async onopen(response) {
         if (response.ok) {
-          console.log('[SSE] 连接成功')
           return
         }
 
@@ -51,14 +51,23 @@ export async function sendMessageStream(
       onmessage(event) {
         if (event.data === '[DONE]') {
           ctrl.abort()
-          onDone()
           return
         }
 
         try {
           const data = JSON.parse(event.data)
-          if (data.chunk) {
+
+          // 接收用户消息
+          if (data.user_message) {
+            onUserMessage(data.user_message)
+          }
+          // 接收 AI 文本片段
+          else if (data.chunk) {
             onChunk(data.chunk)
+          }
+          // 接收完整的 assistant 消息
+          else if (data.assistant_message) {
+            onAssistantMessage(data.assistant_message)
           }
         } catch (err) {
           console.error('[SSE] 解析错误:', err, event.data)
